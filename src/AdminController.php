@@ -74,17 +74,12 @@ class AdminController extends Controller {
     }
 
     public function addImage($post_id) {
-        @mkdir(public_path().'/img/');
-        @mkdir(public_path().'/img/posts/');
-        @mkdir(public_path().'/img/posts/thumbs');
-
         $post = Post::find($post_id);
 
         $file = Input::file('image');
-        $img = \Image::make($file)->fit(1000, 500);
-
-        $filename = '/img/posts/'.$file->getClientOriginalName();
-        $img->save( public_path().$filename );
+        $img = (string) \Image::make($file)->fit(1000, 500)->encode($file->getClientOriginalExtension());
+        
+        \Storage::disk('blog_images')->put('blog/' . $file->getClientOriginalName(), $img);
 
         $post->image = $file->getClientOriginalName();
         $post->save();
