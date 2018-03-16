@@ -28,9 +28,10 @@ class Post extends Eloquent {
 
     function getImageAttribute($value) {
         if ($value == '') {
-            return config('blog.default_image');
+            return \Storage::disk('blog_images')->url(config('blog.default_image'));
         }
-        return '/img/posts/'.$value;
+        
+        return \Storage::disk('blog_images')->url('blog/' . $value);
     }
 
 }
